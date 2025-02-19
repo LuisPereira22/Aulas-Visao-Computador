@@ -34,6 +34,7 @@ typedef struct {
 IVC *vc_image_new(int width, int height, int channels, int levels);
 IVC *vc_image_free(IVC *image);
 int vc_gray_negative(IVC* srcdst);
+int vc_rgb_to_gray(IVC* src, IVC* dst);
 
 // FUNÇÕES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
 IVC *vc_read_image(char *filename);
