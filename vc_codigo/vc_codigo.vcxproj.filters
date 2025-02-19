@@ -22,7 +22,7 @@
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="Aula3main.c">
-      <Filter>Arquivos de Recurso</Filter>
+      <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

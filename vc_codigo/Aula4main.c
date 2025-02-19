@@ -23,7 +23,7 @@ int main(void)
 
 	vc_write_image("vc-0001.pgm", image);
 
-	vc_image_free(image);
+	vc_image_free(image); 
 
 	system("cmd /c start FileGear Images/FLIR/flir-01.pgm");
 	system("FilterGear vc-0001.pgm");
