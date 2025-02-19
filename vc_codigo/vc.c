@@ -86,7 +86,7 @@ int vc_gray_negative(IVC* srcdst)
 			pos = y * bytesperline + x * channels;
 
 			//data[pos] = 255 - data[pos];
-			data[pos] = srcdst->levels = data[pos];
+			data[pos] = srcdst->levels - data[pos];
 		}
 	}
 	return 1;

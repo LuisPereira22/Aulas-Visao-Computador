@@ -3,7 +3,7 @@
 #include "vc.h"
 
 //Abrir imagem, alterar e gravar em novo ficheiro
-int main(void)
+int main/*vc0004*/(void)
 {
 	IVC* image;
 	int i;
@@ -11,12 +11,8 @@ int main(void)
 	image = vc_read_image("Images/FLIR/flir-01.pgm");
 	if (image == NULL) {
 		printf("ERROR -> vc_read_image():\n\tFile not found!\n");
-		getchar();
+		(void)getchar();
 		return 0;
-	}
-
-	for (i = 0;i < image->bytesperline * image->height; i += image->channels) {
-		image->data[i] = 255 - image->data[i];
 	}
 
 	vc_gray_negative(image);
@@ -25,7 +21,7 @@ int main(void)
 
 	vc_image_free(image); 
 
-	system("cmd /c start FileGear Images/FLIR/flir-01.pgm");
+	system("cmd /c start FilterGear Images/FLIR/flir-01.pgm");
 	system("FilterGear vc-0001.pgm");
 
 	printf("Press any key to exit...\n");
