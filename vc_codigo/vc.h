@@ -9,7 +9,8 @@
 
 
 #define VC_DEBUG
-
+#define MAX3(a, b, c) (a > b ? (a > c ? a : c) : (b > c ? b : c))
+#define MIN3(a, b, c) (a < b ? (a < c ? a : c) : (b < c ? b : c))
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                   ESTRUTURA DE UMA IMAGEM
@@ -35,6 +36,10 @@ IVC *vc_image_new(int width, int height, int channels, int levels);
 IVC *vc_image_free(IVC *image);
 int vc_gray_negative(IVC* srcdst);
 int vc_rgb_to_gray(IVC* src, IVC* dst);
+int vc_scale_gray_to_color_palette(IVC* src, IVC* dst);
+int vc_hsv_segmentation(IVC* src, IVC* dst, int hmin, int hmax, int smin, int smax, int vmin, int vmax);
+int vc_rgb_to_hsv(IVC* src, IVC* dst);
+int vc_pixel_counter(IVC* src);
 
 // FUNÇÕES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
 IVC *vc_read_image(char *filename);
