@@ -40,6 +40,8 @@ int vc_scale_gray_to_color_palette(IVC* src, IVC* dst);
 int vc_hsv_segmentation(IVC* src, IVC* dst, int hmin, int hmax, int smin, int smax, int vmin, int vmax);
 int vc_rgb_to_hsv(IVC* src, IVC* dst);
 int vc_pixel_counter(IVC* src);
+int vc_gray_to_binary(IVC* src, IVC* dst, int threshold);
+int vc_gray_to_binary_global_mean(IVC* srcdst);
 
 // FUNÇÕES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
 IVC *vc_read_image(char *filename);
