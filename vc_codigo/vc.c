@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <malloc.h>
+#include <math.h>
 #include "vc.h"
 
 
@@ -457,7 +458,7 @@ int vc_gray_to_binary_midpoint(IVC* src, IVC* dst){
 	int x, y, nx, ny, vmin, vmax;
 	long int pos_src, pos_src_for, pos_dst;
 	float threshold = 0;
-	int neighbor = 25;
+	int neighbor = 25 * 25;
 
 	//Verificação de erros
 	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
@@ -502,6 +503,78 @@ int vc_gray_to_binary_midpoint(IVC* src, IVC* dst){
 					[pos_dst] = 0;
 			}
 		}
+	}
+}
+
+int vc_gray_to_binary_niblack(IVC* src, IVC* dst, int kernel, float k)
+{
+	unsigned char* datasrc = (unsigned char*)src->data;
+	int bytesperline = src->width * src->channels;
+	int channels_src = src->channels;
+	unsigned char* datadst = (unsigned char*)dst->data;
+	int bytesperline_dst = dst->width * dst->channels;
+	int channels_dst = dst->channels;
+	int width = src->width;
+	int height = src->height;
+	int x, y, nx, ny;
+	long int pos_src, pos_src_for, pos_dst;
+	float threshold = 0, brilho = 0, sum = 0;
+	int media, desvio;
+
+
+	//Verificação de erros
+	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
+	if ((src->width != dst->width) || (src->height != dst->height)) return 0; 
+	if ((src->channels != 1) || (dst->channels != 1)) return 0;
+	int offset = (int)(kernel) / 2;
+
+	for (y = 0; y < height; y++)
+	{
+		for (x = 0; x < width; x++)
+		{
+			pos_src = y * bytesperline + x * channels_src;
+			pos_dst = y * bytesperline + x * channels_dst;
+			brilho = 0;
+			sum = 0;
+			for (ny = y - offset; ny <= y + offset; ny++)
+			{
+				for (nx = x - offset; nx <= x + offset; nx++)
+				{
+
+					if (nx >= 0 && nx < width && ny >= 0 && ny < height)
+					{
+
+						pos_src_for = (ny)*bytesperline + (nx)*channels_src;
+						brilho += datasrc[pos_src_for];
+
+					}
+				}
+			}
+			media = brilho / (kernel*kernel);
+
+			for (ny = y - offset; ny <= y + offset; ny++)
+			{
+				for (nx = x - offset; nx <= x + offset; nx++)
+				{
+
+                  if (nx >= 0 && nx < width && ny >= 0 && ny < height)
+					{
+                        pos_src_for = (ny)*bytesperline + (nx)*channels_src;
+						int cont = datasrc[pos_src_for] - media;
+						sum += cont * cont;
+					}
+				}
+			}
+			desvio = sqrt(sum / (kernel * kernel));
+			threshold = media + k * desvio;
+			if (datasrc[pos_src] > threshold) {
+				datadst[pos_dst] = 255;
+			}
+			else {
+				datadst[pos_dst] = 0;
+			}
+		}
+
 	}
 }
 

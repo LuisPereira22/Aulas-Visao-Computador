@@ -43,6 +43,7 @@ int vc_pixel_counter(IVC* src);
 int vc_gray_to_binary(IVC* src, IVC* dst, int threshold);
 int vc_gray_to_binary_global_mean(IVC* srcdst);
 int vc_gray_to_binary_midpoint(IVC* src, IVC* dst);
+int vc_gray_to_binary_niblack(IVC* src, IVC* dst, int kernel, float k);
 
 // FUNÇÕES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
 IVC *vc_read_image(char *filename);

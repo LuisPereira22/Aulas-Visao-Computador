@@ -32,7 +32,7 @@ int main7/*vc0007_1*/(void)
 }
 
 //Abrir imagem, alterar e gravar em novo ficheiro
-int main/*vc0008_1*/(void)
+int main8/*vc0008_1*/(void)
 {
 	IVC* image[2];
 	int i;

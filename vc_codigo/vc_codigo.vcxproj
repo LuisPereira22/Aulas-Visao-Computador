@@ -24,6 +24,7 @@
     <ClCompile Include="Aula5main.c" />
     <ClCompile Include="Aula6Main.c" />
     <ClCompile Include="Aula7Main.c" />
+    <ClCompile Include="Aula9Main.c" />
     <ClCompile Include="vc.c" />
   </ItemGroup>
   <ItemGroup>
