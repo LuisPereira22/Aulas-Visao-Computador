@@ -19,12 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Aula10Main.c" />
+    <ClCompile Include="Aula11Main.c" />
     <ClCompile Include="Aula3main.c" />
     <ClCompile Include="Aula4main.c" />
     <ClCompile Include="Aula5main.c" />
     <ClCompile Include="Aula6Main.c" />
     <ClCompile Include="Aula7Main.c" />
     <ClCompile Include="Aula9Main.c" />
+    <ClCompile Include="Exercicio2.c" />
+    <ClCompile Include="ExercicioCerbero.c" />
     <ClCompile Include="vc.c" />
   </ItemGroup>
   <ItemGroup>

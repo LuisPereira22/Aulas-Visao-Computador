@@ -44,6 +44,12 @@ int vc_gray_to_binary(IVC* src, IVC* dst, int threshold);
 int vc_gray_to_binary_global_mean(IVC* srcdst);
 int vc_gray_to_binary_midpoint(IVC* src, IVC* dst);
 int vc_gray_to_binary_niblack(IVC* src, IVC* dst, int kernel, float k);
+int vc_binary_dilate(IVC* src, IVC* dst, int kernel);
+int vc_binary_erode(IVC* src, IVC* dst, int kernel);
+int vc_binary_open(IVC* src, IVC* dst, int kernel);
+int vc_binary_close(IVC* src, IVC* dst, int kernel);
+int vc_gray_to_binary2(IVC* src, IVC* dst, int threshold1, int threshold2);
+int pintar_cerbero(IVC* src, IVC* dst, IVC* bin);
 
 // FUNÇÕES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
 IVC *vc_read_image(char *filename);

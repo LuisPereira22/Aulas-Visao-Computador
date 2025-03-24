@@ -405,6 +405,37 @@ int vc_gray_to_binary(IVC* src, IVC* dst, int threshold) {
 	return 1;
 }
 
+int vc_gray_to_binary2(IVC* src, IVC* dst, int threshold1, int threshold2) {
+	unsigned char* datasrc = (unsigned char*)src->data;
+	int bytesperline = src->width * src->channels;
+	int channels_src = src->channels;
+	unsigned char* datadst = (unsigned char*)dst->data;
+	int bytesperline_dst = dst->width * dst->channels;
+	int channels_dst = dst->channels;
+	int width = src->width;
+	int height = src->height;
+	int x, y;
+	long int pos_src, pos_dst;
+
+	//Verificação de erros
+	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
+	if ((src->width != dst->width) || (src->height != dst->height)) return 0;
+	if ((src->channels != 1) || (dst->channels != 1)) return 0;
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			pos_src = y * bytesperline + x * channels_src;
+			pos_dst = y * bytesperline_dst + x * channels_dst;
+
+			if (datasrc[pos_src] > threshold1 && datasrc[pos_src] < threshold2)
+				datadst[pos_dst] = 255;
+			else
+				datadst[pos_dst] = 0;
+		}
+	}
+	return 1;
+}
+
 int vc_gray_to_binary_global_mean(IVC* srcdst)
 {
 	unsigned char* datasrc = (unsigned char*)srcdst->data;
@@ -576,6 +607,181 @@ int vc_gray_to_binary_niblack(IVC* src, IVC* dst, int kernel, float k)
 		}
 
 	}
+}
+
+int vc_binary_dilate(IVC* src, IVC* dst, int kernel)
+{
+	unsigned char* datasrc = (unsigned char*)src->data;
+	int bytesperline = src->width * src->channels;
+	int channels_src = src->channels;
+	unsigned char* datadst = (unsigned char*)dst->data;
+	int bytesperline_dst = dst->width * dst->channels;
+	int channels_dst = dst->channels;
+	int width = src->width;
+	int height = src->height;
+	int x, y, nx, ny, flag;
+	long int pos_src, pos_src_for, pos_dst;
+	float threshold = 0;
+
+	//Verificação de erros
+	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
+	if ((src->width != dst->width) || (src->height != dst->height)) return 0;
+	if ((src->channels != 1) || (dst->channels != 1)) return 0;
+	int offset = (int)(kernel) / 2;
+
+	for (y = 0; y < height; y++)
+	{
+		for (x = 0; x < width; x++)
+		{
+			pos_src = y * bytesperline + x * channels_src;
+			pos_dst = y * bytesperline + x * channels_dst;
+			flag = 0;
+			for (ny = y - offset; ny <= y + offset; ny++)
+			{
+				for (nx = x - offset; nx <= x + offset; nx++)
+				{
+
+					if (nx >= 0 && nx < width && ny >= 0 && ny < height)
+					{
+
+						pos_src_for = (ny)*bytesperline + (nx)*channels_src;
+						if (datasrc[pos_src_for] == 255)
+						{
+							flag = 1;
+						}
+
+					}
+				}
+			}
+			if (flag == 1) {
+				datadst[pos_dst] = 255;
+			}
+			else {
+				datadst[pos_dst] = 0;
+			}
+		}
+	}
+}
+
+int vc_binary_erode(IVC* src, IVC* dst, int kernel)
+{
+	unsigned char* datasrc = (unsigned char*)src->data;
+	int bytesperline = src->width * src->channels;
+	int channels_src = src->channels;
+	unsigned char* datadst = (unsigned char*)dst->data;
+	int bytesperline_dst = dst->width * dst->channels;
+	int channels_dst = dst->channels;
+	int width = src->width;
+	int height = src->height;
+	int x, y, nx, ny, flag;
+	long int pos_src, pos_src_for, pos_dst;
+	float threshold = 0;
+
+	//Verificação de erros
+	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
+	if ((src->width != dst->width) || (src->height != dst->height)) return 0;
+	if ((src->channels != 1) || (dst->channels != 1)) return 0;
+	int offset = (int)(kernel) / 2;
+
+	for (y = 0; y < height; y++)
+	{
+		for (x = 0; x < width; x++)
+		{
+			pos_src = y * bytesperline + x * channels_src;
+			pos_dst = y * bytesperline + x * channels_dst;
+			flag = 0;
+			for (ny = y - offset; ny <= y + offset; ny++)
+			{
+				for (nx = x - offset; nx <= x + offset; nx++)
+				{
+
+					if (nx >= 0 && nx < width && ny >= 0 && ny < height)
+					{
+
+						pos_src_for = (ny)*bytesperline + (nx)*channels_src;
+						if (datasrc[pos_src_for] == 0)
+						{
+							flag = 1;
+						}
+
+					}
+				}
+			}
+			if (flag == 1) {
+				datadst[pos_dst] = 0;
+			}
+			else {
+				datadst[pos_dst] = 255;
+			}
+		}
+	}
+}
+
+int vc_binary_open(IVC* src, IVC* dst, int kernel)
+{
+	IVC* tempimage;
+
+	tempimage = vc_image_new(src->width, src->height, 1, 255);
+
+	if (tempimage == NULL) {
+		printf("ERROR -> vc_image_new():\n\tFail to create file!\n");
+		(void)getchar();
+		return 0;
+	}
+
+	vc_binary_erode(src, tempimage, kernel);
+	vc_binary_dilate(tempimage, dst, kernel);
+	vc_image_free(tempimage);
+}
+
+int vc_binary_close(IVC* src, IVC* dst, int kernel)
+{
+	IVC* tempimage;
+
+	tempimage = vc_image_new(src->width, src->height, 1, 255);
+
+	if (tempimage == NULL) {
+		printf("ERROR -> vc_image_new():\n\tFail to create file!\n");
+		(void)getchar();
+		return 0;
+	}
+
+	vc_binary_dilate(src, tempimage, kernel);
+	vc_binary_erode(tempimage, dst, kernel);
+	vc_image_free(tempimage);
+}
+
+int pintar_cerbero(IVC* src, IVC* dst, IVC* bin)
+{
+	unsigned char* datasrc = (unsigned char*)src->data;
+	unsigned char* databin = (unsigned char*)bin->data;
+	int bytesperline = src->width * src->channels;
+	int channels_src = src->channels;
+	unsigned char* datadst = (unsigned char*)dst->data;
+	int bytesperline_dst = dst->width * dst->channels;
+	int channels_dst = dst->channels;
+	int width = src->width;
+	int height = src->height;
+	int x, y;
+	long int pos_src, pos_dst;
+
+	//Verificação de erros
+	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
+	if ((src->width != dst->width) || (src->height != dst->height)) return 0;
+	if ((src->channels != 1) || (dst->channels != 1)) return 0;
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			pos_src = y * bytesperline + x * channels_src;
+			pos_dst = y * bytesperline_dst + x * channels_dst;
+
+			if (databin[pos_src] == 255)
+				datadst[pos_dst] = datasrc[pos_src];
+			else
+				datadst[pos_dst] = 0;
+		}
+	}
+	return 1;
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

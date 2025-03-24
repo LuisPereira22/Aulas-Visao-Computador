@@ -3,7 +3,7 @@
 #include "vc.h"
 
 //Abrir imagem, alterar e gravar em novo ficheiro
-int main/*vc0009_1*/(void)
+int main9/*vc0009_1*/(void)
 {
 	IVC* image[2];
 	int i;
